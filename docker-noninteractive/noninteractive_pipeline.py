@@ -5,6 +5,7 @@ from pathlib import Path
 import inquirer
 import shutil
 import os
+import sys
 
 class RKLLMRemotePipeline:
     def __init__(self, model_id="", lora_id="", platform="rk3588", qtype="w8a8", hybrid_rate="0.0", library_type="HF", optimization=1):
@@ -72,7 +73,7 @@ class RKLLMRemotePipeline:
             self.lora_dir = f"./models/{self.lora_name}/"
             self.export_name = f"{self.model_name}-{self.lora_name}-{self.name_suffix}"
             self.export_path = f"./models/{self.model_name}-{self.lora_name}-{self.platform}/"
-        self.rkllm_version = "1.1.2"
+        self.rkllm_version = "1.1.4"
 
     def remote_pipeline_to_local(self):
         '''
@@ -181,15 +182,15 @@ class HubHelpers:
         Helper function to authenticate with HuggingFace.
         Necessary for downloading gated repositories, and uploading.
         """
-        self.token_path = f"{self.home_dir}/.cache/huggingface/token"
-        if os.path.exists(self.token_path):
-            self.token_file = open(self.token_path, "r")
-            self.hf_token = self.token_file.read()
-        else:
-            self.hf_input = [inquirer.Text("token", message="Please enter your Hugging Face token", default="")]
-            self.hf_token = inquirer.prompt(self.hf_input)["token"]
+        #self.token_path = f"{self.home_dir}/.cache/huggingface/token"
+        #if os.path.exists(self.token_path):
+        #    self.token_file = open(self.token_path, "r")
+        #    self.hf_token = self.token_file.read()
+        #else:
+        #    self.hf_input = [inquirer.Text("token", message="Please enter your Hugging Face token", default="")]
+        #    self.hf_token = inquirer.prompt(self.hf_input)["token"]
         try:
-            login(token=self.hf_token)
+            login(token=os.getenv("HF_TOKEN"))
         except Exception as e:
             print(f"Login failed: {e}\nGated models will be inaccessible, and you " + \
                   "will not be able to upload to HuggingFace.")
@@ -261,7 +262,13 @@ if __name__ == "__main__":
     Provide a list of model_ids (Huggingface - user/model format)
     model_ids = {"THUDM/chatglm3-6b", "THUDM/chatglm3-6b-32k", "THUDM/chatglm3-6b-128k"}
     """
-    model_ids = ["", "", "", ""]
+    if len(sys.argv) > 1:
+        argument = sys.argv[1]
+        print(f"The argument is: {argument}")
+    else:
+        print("No argument were provided.")
+        sys.exit(1)
+    model_ids = ["Qwen/Qwen2.5-14B-Instruct"]
     """
     Provide a list of quantization types
     rk3588 compatible qtypes:
@@ -275,13 +282,13 @@ if __name__ == "__main__":
     Configuring loops and conditionals within the class's domain causing the entire program
     to exit
     """
-    qtypes = ["", "", ""]
+    qtypes = ["w8a8", "w8a8_g128", "w8a8_g256", "w8a8_g512"]
     """
     Hybrid quant ratio, a float between 0.0 and 1.0. Initialized as strings because
     float 0.0 usually winds up being cast to "None"
     hybrid_rates = {"0.0", "0.5", "1.0"}
     """
-    hybrid_rates = ["", "", ""]
+    hybrid_rates = ["0.0", "0.5", "1.0"]
     """
     Whether to use optimization. It's an integer, but really should be a boolean.
     Set as strings here to prevent "None" casting.

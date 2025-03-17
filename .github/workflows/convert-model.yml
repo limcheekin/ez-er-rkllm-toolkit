@@ -1,0 +1,22 @@
+name: Convert to RKLLM Model
+on:
+  workflow_dispatch:
+    inputs:
+      model_name:
+        required: true
+        description: Specify model such as Qwen/Qwen2.5-0.5B-Instruct, Qwen/Qwen2.5-14B-Instruct, THUDM/chatglm3-6b
+
+jobs:
+  convert:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+
+      - name: Execute docker commands
+        run: |
+          cd docker-noninteractive
+          docker build -t $(whoami)/rkllm-noninteractive .
+          docker run -it --rm  -e HF_TOKEN="${{ secrets.HF_TOKEN }}" $(whoami)/rkllm-noninteractive --custom-arg ${{ github.event.inputs.model_name }}
