@@ -19,4 +19,4 @@ jobs:
         run: |
           cd docker-noninteractive
           docker build -t $(whoami)/rkllm-noninteractive .
-          docker run -it --rm  -e HF_TOKEN="${{ secrets.HF_TOKEN }}" $(whoami)/rkllm-noninteractive --custom-arg ${{ github.event.inputs.model_name }}
+          docker run -t --rm  -e HF_TOKEN="${{ secrets.HF_TOKEN }}" $(whoami)/rkllm-noninteractive --custom-arg ${{ github.event.inputs.model_name }}
