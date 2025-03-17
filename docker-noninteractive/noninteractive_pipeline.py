@@ -182,13 +182,6 @@ class HubHelpers:
         Helper function to authenticate with HuggingFace.
         Necessary for downloading gated repositories, and uploading.
         """
-        #self.token_path = f"{self.home_dir}/.cache/huggingface/token"
-        #if os.path.exists(self.token_path):
-        #    self.token_file = open(self.token_path, "r")
-        #    self.hf_token = self.token_file.read()
-        #else:
-        #    self.hf_input = [inquirer.Text("token", message="Please enter your Hugging Face token", default="")]
-        #    self.hf_token = inquirer.prompt(self.hf_input)["token"]
         try:
             login(token=os.getenv("HF_TOKEN"))
         except Exception as e:
@@ -196,8 +189,6 @@ class HubHelpers:
                   "will not be able to upload to HuggingFace.")
         else:
             print("Logged into HuggingFace!")
-        self.hf_username = whoami(self.hf_token)["name"]
-        print(self.hf_username)
             
     def build_card(self, export_path):
         """
