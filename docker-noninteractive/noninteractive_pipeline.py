@@ -183,6 +183,7 @@ class HubHelpers:
         Necessary for downloading gated repositories, and uploading.
         """
         self.hf_token = os.getenv("HF_TOKEN")
+        self.hf_username = os.getenv("HF_USERNAME")
         try:
             login(token=self.hf_token)
         except Exception as e:
@@ -274,7 +275,7 @@ if __name__ == "__main__":
     Configuring loops and conditionals within the class's domain causing the entire program
     to exit
     """
-    qtypes = ["w8a8", "w8a8_g128", "w8a8_g256", "w8a8_g512"]
+    qtypes = ["w8a8", "w8a8_g128"]
     """
     Hybrid quant ratio, a float between 0.0 and 1.0. Initialized as strings because
     float 0.0 usually winds up being cast to "None"
