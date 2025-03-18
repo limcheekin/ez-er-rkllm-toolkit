@@ -182,8 +182,9 @@ class HubHelpers:
         Helper function to authenticate with HuggingFace.
         Necessary for downloading gated repositories, and uploading.
         """
+        self.hf_token = os.getenv("HF_TOKEN")
         try:
-            login(token=os.getenv("HF_TOKEN"))
+            login(token=self.hf_token)
         except Exception as e:
             print(f"Login failed: {e}\nGated models will be inaccessible, and you " + \
                   "will not be able to upload to HuggingFace.")
@@ -259,7 +260,7 @@ if __name__ == "__main__":
     else:
         print("No argument were provided.")
         sys.exit(1)
-    model_ids = ["Qwen/Qwen2.5-14B-Instruct"]
+    model_ids = [argument]
     """
     Provide a list of quantization types
     rk3588 compatible qtypes:
